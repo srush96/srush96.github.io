@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<style>#map {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  .map-overlay {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.8);
+    margin-right: 20px;
+    font-family: Cambria, sans-serif;
+    overflow: auto;
+    border-radius: 15px;
+  }
+  
+  #legend {
+    padding: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    line-height: 18px;
+    height: 80px;
+    left: 20px;
+    margin-bottom: 40px;
+    width: 190px;
+    background: #d8d6cf;
+  
+  }
+  
+  .legend-key {
+    display: inline-block;
+    border-radius: 20%;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+  }
+  
+  #title {
+    top: 0;
+    left: 20px;
+    height: 110px;
+    margin-top: 20px;
+    width: 350px;
+    background: #d8d6cf;
+  }
+  
+  h2 {
+    margin: 10px;
+    font-size: 1.2em;
+    text-align: left;
+  }
+  
+  p {
+    margin: 10px;
+    font-size: 1em;
+    text-align: left;
+  }
+  
+  #button {
+    background: white;
+    position: absolute;
+    z-index: 1;
+    top: 10px;
+    right: 10px;
+    border-radius: 10px;
+    width: 120px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    font-family: 'Cambria', sans-serif;
+  }
+  
+  #button a {
+    font-size: 13px;
+    color: #404040;
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding: 10px;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(1, 1, 1, 0.25);
+    text-align: center;
+  }
+  
+  #button a:last-child {
+    border: none;
+  }
+  
+  #button a:hover {
+    background-color: #f8f8f8;
+    color: #404040;
+  }
+  
+  #button a.active {
+    background-color: #231a01;
+    color: #ffffff;
+  }
+  
+  #button a.active:hover {
+    background: #6f6d67;
+  }
+  
+  .mapboxgl-popup {
+    max-width: 200px;
+  }
+  
+  .mapboxgl-popup-content {
+    text-align: center;
+    font-family: 'Cambria', sans-serif;
+  }</style>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=QFJZMdW6i9k6RWIcRVFHb0LgXBmbQPwoMILWVuYw3z3xpPSTbtvRWrszoqYN_bFAZaj9NjceJKj8Y5S6Rvc7sxGD5nGr9TKbYLTASyKxnhTuFV9dT093X7NyCAY3s7HarHMD-DetwlPOc9we5z7B8LhO7M3cvJkj86NzfWZneeqNVmi6ozxYiggxwvtwbhBRGWycU0sLNAn4-8UYDjYDGDS_HH8gh7iPwCzI3D70drKFHksSggXFEEB7g4TxYmwX5mkgSFiO4XOZhfMEpyASfWzPRfYX0E-3mQP6EXom8BiwBIp4FzaFzIQVBLLlRL1fbpEUbgZOAhwoq6kt74bd6SwTJ7Yt9zZK5fPtFz97iGBIqXgk2TokvC4dx52aePO6kEwuW7uuF577mzfRWA3MN74YsOdDw_9FMxbVddl76HYoeCplBBKmF3ScS5WfeP15HjZr6rfWPLX-6RV67oJSZPRSVPfGjn_D1QaskbZk1CwbAFl9pbl0spVDiW0mCGQQpmrCO1bmgL7HYPMAOFeq3g1_4ArEGmritpv7fmOzl-MelQS49xhj6TiZw9duAO-wtAmkL-NmRreajDc1WHKYIZJJxjPvBtZvMkPZcl-HCtfoHODPk7gOySxxLGNluUON2ABHHhkHb0ZDC2GBn4OA0LnN7VlinqV1u5gbX9Uv3co" charset="UTF-8"></script><link rel="stylesheet" crossorigin="anonymous" href="https://gc.kis.v2.scr.kaspersky-labs.com/E3E8934C-235A-4B0E-825A-35A08381A191/abn/main.css?attr=aHR0cHM6Ly9jZG4uaW5zdC1mcy1zeWQtcHJvZC5pbnNjbG91ZGdhdGUubmV0Lzg1YWUxOTZmLTg3MTktNGZiYi05ZmM1LWJmMGY0NmY1YzM0MC9TMzgwMzc2Ml9pbmRleDEuaHRtbD90b2tlbj1leUpoYkdjaU9pSklVelV4TWlJc0luUjVjQ0k2SWtwWFZDSXNJbXRwWkNJNkltTmtiaUo5LmV5SnlaWE52ZFhKalpTSTZJaTg0TldGbE1UazJaaTA0TnpFNUxUUm1ZbUl0T1daak5TMWlaakJtTkRabU5XTXpOREF2VXpNNE1ETTNOakpmYVc1a1pYZ3hMbWgwYld3aUxDSjBaVzVoYm5RaU9pSmpZVzUyWVhNaUxDSjFjMlZ5WDJsa0lqb2lPVFU1TlRBd01EQXdNREF4T1RnME9EZ2lMQ0pwWVhRaU9qRTJNRGd5TmpZd056Y3NJbVY0Y0NJNk1UWXdPRE0xTWpRM04zMC5Yb3JWWVJtM3NJc1lfUmt5TnZNdHh1ZHF4djZ4S2piX01hQ3ExQm9YcDZIT0w4VW01SFV3ZTV2SmFQdzlvTi1BRVRqX0FsWUlFenhJaC1oa284bXFzUSZkb3dubG9hZD0xJmNvbnRlbnRfdHlwZT10ZXh0JTJmaHRtbA"/><script src="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.js"></script>
+    <link
+      href="https://api.mapbox.com/mapbox-gl-js/v1.12.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+</head>
+<body>
+    <div id='map'></div>
+<div class='map-overlay' id='legend'></div>
+<nav id='button'></nav>
+<div class='map-overlay' id='title'>
+  <h2>Building Development Status</h2>
+
+  <div id='info'>
+    <p>Hover over a building!</p>
+  </div>
+</div>
+
+<script>mapboxgl.accessToken = 'pk.eyJ1IjoiczM4MDM3NjIiLCJhIjoiY2swbmlyYjIyMDBkMzNrbXVsbTM0OTJlZSJ9.6IvhMsAK_BUeqi0sbpUjig';
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/s3803762/ckflxeb9i5jj119r1c60qdu0e',
+      center: [144.96, -37.81],
+    zoom: 13
+    
+    });
+    map.on('load', function() {
+      // the code for adding a layer goes in here
+      var statusNames = [ 'APPLIED', 'APPROVED', 'UNDER CONSTRUCTION','COMPLETED'];
+    var statusColors = ["#0544a3","#08918d","#aba907","#985fce"];
+    
+    
+      for (var i = 0; i < statusNames.length; i++) {
+      var statusName = statusNames[i]; 
+     var statusColor = statusColors[i];
+     var link = document.createElement('a');
+     link.href = '#'; 
+     link.className = 'active'; 
+     link.textContent = statusName; 
+     link.onclick = function (e) {
+     var clickedLayer = this.textContent;
+     e.preventDefault();
+     e.stopPropagation();
+    
+    var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+    
+    if (visibility === 'visible') {
+     map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+     this.className = '';
+     } else {
+     this.className = 'active';
+     map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+     }
+     };
+     var layers = document.getElementById('button');
+    layers.appendChild(link);
+    
+    // the map.addLayer function goes here
+     map.addLayer({
+        // the code for which layer and what style goes in here 
+        id: statusName,
+        type: 'fill',
+        source: {
+          type: 'vector',
+          url: 'mapbox://s3803762.83ej9opo'
+        },
+        'source-layer':'Development_Activity_Model_Fo-2cf2kv' ,
+        "paint": {
+          "fill-color": statusColor,
+          "fill-outline-color": "white"
+        }
+      } ); 
+      var item = document.createElement('div');
+    var key = document.createElement('span');
+    key.className = 'legend-key';
+    key.style.backgroundColor = statusColor;
+    
+    var value = document.createElement('span');
+    value.innerHTML = statusName;
+    item.appendChild(key);
+    item.appendChild(value);
+    legend.appendChild(item);
+      
+      map.setFilter(statusName, ['==', 'status', statusName]);
+    }
+    
+    
+      
+      
+    });</script>
+</body>
+</html>
